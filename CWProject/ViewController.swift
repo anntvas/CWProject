@@ -120,48 +120,50 @@ class ViewController: UIViewController {
             processInParallel()
         }
     }
-    
+
+    // Последовательная обработка изображений
     private func processSequentially() {
         let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        
-        for image in images {
-            let operation = BlockOperation {
+        queue.maxConcurrentOperationCount = 1 // Последовательная обработка
+
+        for (index, image) in images.enumerated() {
+            queue.addOperation {
                 let filteredImage = self.applyRandomFilter(to: image)
                 DispatchQueue.main.async {
-                    self.filteredImages.append(filteredImage)
-                    self.collectionView.reloadData()
+                    // Обновляем массив и соответствующую ячейку
+                    self.filteredImages[index] = filteredImage
+                    self.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
                 }
             }
-            queue.addOperation(operation)
         }
     }
-    
+
+    // Параллельная обработка изображений
     private func processInParallel() {
         let group = DispatchGroup()
         let queue = DispatchQueue.global(qos: .userInitiated)
-        
-        for image in images {
+
+        for (index, image) in images.enumerated() {
             group.enter()
             queue.async {
                 let filteredImage = self.applyRandomFilter(to: image)
                 DispatchQueue.main.async {
-                    self.filteredImages.append(filteredImage)
-                    self.collectionView.reloadData()
+                    // Обновляем массив и соответствующую ячейку
+                    self.filteredImages[index] = filteredImage
+                    self.collectionView.reloadItems(at: [IndexPath(item: index, section: 0)])
                     group.leave()
                 }
             }
         }
-        
+
         group.notify(queue: .main) {
-            print("Все изображения обработаны")
+            print("Обработка всех изображений завершена")
         }
     }
-    
+
     private func applyRandomFilter(to image: UIImage) -> UIImage {
-        // Пример применения фильтра (перевод изображения в оттенки серого)
         let ciImage = CIImage(image: image)
-        let filter = CIFilter(name: "CIPhotoEffectMono")
+        let filter = CIFilter(name: RandomFilter.random().rawValue)
         filter?.setValue(ciImage, forKey: kCIInputImageKey)
         guard let outputImage = filter?.outputImage else { return image }
         return UIImage(ciImage: outputImage)
@@ -174,7 +176,7 @@ class ViewController: UIViewController {
             let factorial = await calculateFactorial(of: i)
             DispatchQueue.main.async {
                 self.progressView.progress = Float(i) / Float(range.count)
-                self.resultLabel.text = "Результат: \(factorial)"
+                self.resultLabel.text = "Результат: \(i * 5)%"
             }
         }
     }
