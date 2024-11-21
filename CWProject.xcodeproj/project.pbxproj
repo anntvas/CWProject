@@ -16,6 +16,7 @@
 		955DA4AC2CEF90140012E46E /* ImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955DA4AB2CEF90140012E46E /* ImageProcessor.swift */; };
 		955DA4AF2CEFA1E90012E46E /* FilterType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955DA4AE2CEFA1E90012E46E /* FilterType.swift */; };
 		955DA4B12CEFA7140012E46E /* RandomFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955DA4B02CEFA7140012E46E /* RandomFilter.swift */; };
+		955DA4B32CEFC3720012E46E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955DA4B22CEFC3720012E46E /* MainView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		955DA4AB2CEF90140012E46E /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessor.swift; sourceTree = "<group>"; };
 		955DA4AE2CEFA1E90012E46E /* FilterType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilterType.swift; sourceTree = "<group>"; };
 		955DA4B02CEFA7140012E46E /* RandomFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomFilter.swift; sourceTree = "<group>"; };
+		955DA4B22CEFC3720012E46E /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +72,7 @@
 				955DA4A02CEF7FE20012E46E /* Assets.xcassets */,
 				955DA4A22CEF7FE30012E46E /* LaunchScreen.storyboard */,
 				955DA4A52CEF7FE30012E46E /* Info.plist */,
-				955DA4AB2CEF90140012E46E /* ImageProcessor.swift */,
+				955DA4B22CEFC3720012E46E /* MainView.swift */,
 			);
 			path = CWProject;
 			sourceTree = "<group>";
@@ -78,6 +80,7 @@
 		955DA4AD2CEFA1D40012E46E /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				955DA4AB2CEF90140012E46E /* ImageProcessor.swift */,
 				955DA4AE2CEFA1E90012E46E /* FilterType.swift */,
 				955DA4B02CEFA7140012E46E /* RandomFilter.swift */,
 			);
@@ -156,6 +159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				955DA4AF2CEFA1E90012E46E /* FilterType.swift in Sources */,
+				955DA4B32CEFC3720012E46E /* MainView.swift in Sources */,
 				955DA49C2CEF7FD50012E46E /* ViewController.swift in Sources */,
 				955DA4B12CEFA7140012E46E /* RandomFilter.swift in Sources */,
 				955DA4982CEF7FD50012E46E /* AppDelegate.swift in Sources */,

@@ -8,15 +8,15 @@
 import UIKit
 
 class ViewController: UIViewController, UICollectionViewDataSource {
-    // MARK: - Properties
     private let mainView = MainView()
-    private var images: [UIImage] = [] // Исходные изображения
-    private var filteredImages: [UIImage] = [] // Изображения с фильтрами
+    private var images: [UIImage] = []
+    private var filteredImages: [UIImage] = []
     private var isSequentialProcessing: Bool {
         mainView.segmentedControl.selectedSegmentIndex == 1
     }
+    private var task: Task<Void, Never>?
+
     
-    // MARK: - Lifecycle
     override func loadView() {
         view = mainView
     }
@@ -28,7 +28,6 @@ class ViewController: UIViewController, UICollectionViewDataSource {
         setupActions()
     }
     
-    // MARK: - Setup
     private func setupCollectionView() {
         mainView.collectionView.dataSource = self
         mainView.collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
@@ -36,28 +35,72 @@ class ViewController: UIViewController, UICollectionViewDataSource {
     
     private func setupActions() {
         mainView.startButton.addTarget(self, action: #selector(startCalculations), for: .touchUpInside)
+        mainView.cancelButton.addTarget(self, action: #selector(cancelCalculations), for: .touchUpInside)
     }
     
+    @objc private func startCalculations() {
+        task?.cancel()
+        applyFilters()
+
+        task = Task {
+            await performLongCalculations()
+        }
+    }
+
+    @objc private func cancelCalculations() {
+        task?.cancel()
+        mainView.progressView.progress = 0.0
+        mainView.resultLabel.text = "Результат: отменено"
+    }
+
+    
     private func loadImages() {
-        // Загрузка изображений в массив
-        images = (1...10).compactMap { UIImage(named: "image\($0)") }
+        for i in 1...12 {
+            if let image = UIImage(named: "image\(i)") {
+                images.append(image)
+            }
+        }
         filteredImages = images
     }
     
-    // MARK: - Actions
-    @objc private func startCalculations() {
-        applyFilters()
+    private func performLongCalculations() async {
+        mainView.progressView.progress = 0
+        mainView.resultLabel.text = "Результат:"
+
+        let range = 1...20
+
+        for i in range {
+            guard !Task.isCancelled else { return }
+
+            let factorialResult = await calculateFactorial(of: i)
+            
+            await MainActor.run {
+                mainView.progressView.progress = Float(i) / Float(range.count)
+                mainView.resultLabel.text = "Результат: \(i * 5)%"
+            }
+        }
     }
+
+    private func calculateFactorial(of number: Int) async -> Int {
+        return await Task { () -> Int in
+            var result = 1
+            for i in 1...number {
+                result *= i
+            }
+            return result
+        }.value
+    }
+
     
     private func applyFilters() {
         if isSequentialProcessing {
-            processSequentially()
+            processSerial()
         } else {
-            processInParallel()
+            processConcurrent()
         }
     }
     
-    private func processSequentially() {
+    private func processSerial() {
         let queue = OperationQueue()
         queue.maxConcurrentOperationCount = 1
         
@@ -72,7 +115,7 @@ class ViewController: UIViewController, UICollectionViewDataSource {
         }
     }
     
-    private func processInParallel() {
+    private func processConcurrent() {
         let queue = DispatchQueue.global(qos: .userInitiated)
         let group = DispatchGroup()
         
@@ -93,7 +136,6 @@ class ViewController: UIViewController, UICollectionViewDataSource {
         }
     }
     
-    // MARK: - UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return filteredImages.count
     }
