@@ -16,7 +16,7 @@ class ImageProcessor {
     // Применение случайного фильтра к изображению
     func applyRandomFilter(to image: UIImage) -> UIImage {
         let ciImage = CIImage(image: image)
-        let filter = CIFilter(name: "CIPhotoEffectMono") // Пример фильтра
+        let filter = CIFilter(name: RandomFilter.random().rawValue) // Пример фильтра
         filter?.setValue(ciImage, forKey: kCIInputImageKey)
         
         guard let outputImage = filter?.outputImage else { return image }
